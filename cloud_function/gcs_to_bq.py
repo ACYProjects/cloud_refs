@@ -4,7 +4,6 @@ from io import StringIO
 from google.cloud import storage, bigquery
 
 def validate_data(row):
-    # Replace this with your own validation logic for data type and regex
     if not isinstance(row['id'], int):
         return False
     if not isinstance(row['name'], str):
@@ -47,29 +46,24 @@ def load_csv_to_bq(data, context):
         job_config.skip_leading_rows = 1
         job_config.autodetect = True
 
-        # Write to temporary file in GCS
         temp_file = NamedTemporaryFile(delete=False)
         writer = csv.DictWriter(temp_file, fieldnames=valid_rows[0].keys())
         writer.writeheader()
         writer.writerows(valid_rows)
         temp_file.close()
 
-        # Upload the file to GCS
         temp_blob = bucket.blob('temp/' + file_name)
         with open(temp_file.name, 'rb') as f:
             temp_blob.upload_from_file(f)
-
-        # Load the data into BigQuery from GCS
+            
         load_job = bigquery_client.load_table_from_uri(
             'gs://{}/{}'.format(bucket_name, temp_blob.name),
             table_ref,
             job_config=job_config
         )
 
-        # Wait for the job to finish
         load_job.result()
 
-        # Delete the temporary file and blob
         temp_file.unlink()
         temp_blob.delete()
 
