@@ -44,7 +44,7 @@ for k in k_values:
     loss_values.append(loss)
 
 # Plot the loss values as a function of the number of clusters
-plt.plot(k_values, loss_values)
+plt.plot(k_values, loss_values.numpy())
 plt.xlabel('Number of clusters')
 plt.ylabel('Loss')
 plt.title('Elbow Method')
