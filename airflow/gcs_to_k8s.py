@@ -14,17 +14,17 @@ default_args = {
 }
 
 dag = DAG(
-    'gcs_file_sensor_to_kubernetes',
+    'gcs_parquet_file_sensor_to_kubernetes',
     default_args=default_args,
-    description='Trigger Kubernetes cluster after GCS file sensor',
+    description='Trigger Kubernetes cluster after GCS Parquet file sensor',
     schedule_interval=timedelta(days=1),
     catchup=False,
 )
 
-gcs_file_sensor = GoogleCloudStorageObjectSensor(
-    task_id='gcs_file_sensor',
+gcs_parquet_file_sensor = GoogleCloudStorageObjectSensor(
+    task_id='gcs_parquet_file_sensor',
     bucket='your-gcs-bucket',
-    object='path/to/your/file',
+    object='path/to/your/*.parquet',
     google_cloud_conn_id='google_cloud_default',
     dag=dag,
 )
@@ -42,4 +42,4 @@ kubernetes_task = KubernetesPodOperator(
     dag=dag,
 )
 
-gcs_file_sensor >> kubernetes_task
+gcs_parquet_file_sensor >> kubernetes_task
