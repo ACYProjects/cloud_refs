@@ -40,7 +40,6 @@ public class IsValidDataFn implements SerializableFunction<KV<String, Double>, B
 public class IsInvalidDataFn implements SerializableFunction<KV<String, Double>, Boolean> {
     @Override
     public Boolean apply(KV<String, Double> input) {
-        // Reuse IsValidDataFn logic and negate the result
         IsValidDataFn isValidDataFn = new IsValidDataFn();
         return !isValidDataFn.apply(input);
     }
