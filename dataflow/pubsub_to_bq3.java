@@ -49,15 +49,12 @@ public class MyPipeline {
     options.setRunner(DataflowRunner.class);
     options.setTempLocation("gs://my-bucket/tmp");
 
-    // Create the pipeline and set up the Pub/Sub source
     Pipeline pipeline = Pipeline.create(options);
     String subscription = "projects/my-project-id/subscriptions/my-subscription";
     PCollection<String> input = pipeline.apply("Read from Pub/Sub", PubsubIO.readStrings().fromSubscription(subscription));
 
-    // Extract key-value pairs from the input messages
     PCollection<KV<String, Double>> keyedValues = input.apply("Extract key-value pairs", ParDo.of(new ExtractKeyValueFn()));
 
-    // Apply tumbling window of one minute to calculate the average of values for each key
     PCollection<KV<String, Double>> averages = keyedValues.apply("Apply tumbling window", Window.<KV<String, Double>>into(FixedWindows.of(Duration.standardMinutes(1)))
         .triggering(Repeatedly.forever(AfterProcessingTime.pastFirstElementInPane().plusDelayOf(Duration.standardSeconds(30))))
         .withAllowedLateness(Duration.ZERO)
@@ -65,7 +62,6 @@ public class MyPipeline {
         .discardingFiredPanes())
         .apply("Calculate average", Combine.perKey(new AverageFn()));
 
-    // Filter invalid data and output to deadletter table
     PCollectionTuple output = averages.apply("Filter invalid data", ParDo.of(new FilterInvalidDataFn(options.getThreshold()))
         .withOutputTags(OUTPUT_TAG, TupleTagList.of(DEADLETTER_TAG)));
     output.get(DEADLETTER_TAG)
@@ -77,7 +73,6 @@ public class MyPipeline {
             .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
             .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND));
 
-    // Output valid data to BigQuery table
     output.get(OUTPUT_TAG)
         .apply("Format output", MapElements.into(TypeDescriptor.of(TableRow.class))
             .via((KV<String, Double> kv) -> new TableRow().set("key", kv.getKey()).set("average", kv.getValue())))
@@ -87,11 +82,9 @@ public class MyPipeline {
             .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
             .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND));
 
-    // Run the pipeline
     pipeline.run();
   }
 
-  // Extract key-value pairs from input messages
   static class ExtractKeyValueFn extends DoFn<String, KV<String, Double>> {
     @ProcessElement
     public void processElement(ProcessContext c) {
@@ -107,7 +100,6 @@ public class MyPipeline {
     }
   }
 
-  // Calculate average value for each key
   static class AverageFn extends CombineFn<Double, AverageFn.Accum, Double> {
     public static class Accum implements Serializable {
       double sum = 0;
@@ -138,7 +130,6 @@ public class MyPipeline {
     }
   }
 
-  // Filter invalid data and output to deadletter table
   static class FilterInvalidDataFn extends DoFn<KV<String, Double>, KV<String, Double>> {
     private final double threshold;
     private TupleTag<TableRow> deadletterTag;
