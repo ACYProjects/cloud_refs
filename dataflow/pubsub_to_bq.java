@@ -38,11 +38,9 @@ TumblingWindowAveragePipelineOptions options = PipelineOptionsFactory.fromArgs(a
   
 Pipeline pipeline = Pipeline.create(options);
 
-// Read messages from Pub/Sub
 PCollection<String> messages = pipeline
     .apply(PubsubIO.readFromPubSub(options.getInputTopic()));
 
-// Calculate averages using a tumbling window
 PCollection<Double> averages = messages
     .apply(ParDo.of(new DoFn<String, Double>() {
       @ProcessElement
@@ -55,13 +53,11 @@ PCollection<Double> averages = messages
     }))
     .apply(Window.into(FixedWindows.of(Duration.standardMinutes(1))));
 
-// Write the results to BigQuery
 averages.apply(BigQueryIO.writeTableRows(options.getOutputTable(), new TableSchema()
     .setFields(ImmutableList.of(
         new TableSchema.Field("average", TableSchema.FieldType.FLOAT64)
     ))));
 
-// Send invalid data as deadletter to another BigQuery dataset
 averages.apply(MapElements.via(new DoFn<Double, Double>() {
   @ProcessElement
   public void processElement(ProcessContext c) {
@@ -78,7 +74,6 @@ averages.apply(MapElements.via(new DoFn<Double, Double>() {
             new TableSchema.Field("average", TableSchema.FieldType.FLOAT64)
         ))));
 
-// Run the pipeline
 pipeline.run();
   
   
