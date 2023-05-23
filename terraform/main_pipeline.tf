@@ -39,7 +39,7 @@ EOF
 }
 
 resource "google_dataflow_job" "dataflow_job" {
-  name        = "<YOUR_DATAFLOW_JOB_NAME>"
+  name        = "dataflow_job_name"
   region      = "us-central1"
   template_gcs_path = "gs://${google_storage_bucket.gcs_bucket.name}/path/to/your/custom_template"
   temp_gcs_location = "gs://${google_storage_bucket.temp_bucket.name}/temp"
