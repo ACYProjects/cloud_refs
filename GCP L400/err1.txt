@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/home/student_04_92ca5d7bbcc8/genai-asessment/lib/python3.10/site-packages/flask/app.py", line 1498, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/home/student_04_92ca5d7bbcc8/genai-asessment/lib/python3.10/site-packages/flask/app.py", line 1476, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/student_04_92ca5d7bbcc8/genai-asessment/lib/python3.10/site-packages/flask/app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/student_04_92ca5d7bbcc8/genai-asessment/lib/python3.10/site-packages/flask/app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/student_04_92ca5d7bbcc8/genai-asessment/lib/python3.10/site-packages/flask/app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/student_04_92ca5d7bbcc8/genai-asessment/lib/python3.10/site-packages/flask/app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/student_04_92ca5d7bbcc8/gen-ai-assessment/main.py", line 75, in main
+    data = search_vector_database(question)
+  File "/home/student_04_92ca5d7bbcc8/gen-ai-assessment/main.py", line 128, in search_vector_database
+    data = "\n".join([doc.to_dict()['content'] for doc in docs if doc.exists])
+  File "/home/student_04_92ca5d7bbcc8/gen-ai-assessment/main.py", line 128, in <listcomp>
+    data = "\n".join([doc.to_dict()['content'] for doc in docs if doc.exists])
+KeyError: 'content'
