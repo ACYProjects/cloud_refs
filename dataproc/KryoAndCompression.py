@@ -21,25 +21,20 @@ def process_data(spark):
         StructField("country", StringType(), True)  # Added country column
     ])
 
-    # Read data from Parquet file
     df = spark.read.schema(schema).parquet(f"gs://{BUCKET}/user_interactions.parquet")
 
-    # Data cleaning and transformation
     df = df.filter(col("purchase_amount") > 0)  # Filter out negative purchases
     df = df.withColumn("purchase_date", to_date(col("timestamp"), "yyyy-MM-dd"))  # Extract purchase date
 
-    # Calculate metrics
     total_purchase_per_user = df.groupBy("user_id").agg(sum("purchase_amount").alias("total_purchase"))
     average_purchase_amount = df.agg(avg("purchase_amount")).collect()[0][0]
     purchase_count_by_country = df.groupBy("country").agg(count("*").alias("purchase_count"))
 
-    # Create a new DataFrame with calculated metrics
     metrics_df = spark.createDataFrame([
         (average_purchase_amount, "average_purchase_amount"),
         (purchase_count_by_country.count(), "total_purchase_count")
     ], ["value", "metric"])
 
-    # Write results to Parquet
     total_purchase_per_user.write.parquet(f"gs://{BUCKET}/total_purchase_per_user.parquet")
     metrics_df.write.parquet(f"gs://{BUCKET}/metrics.parquet")
 
