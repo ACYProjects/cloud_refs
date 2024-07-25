@@ -12,45 +12,33 @@ import vertexai
 from vertexai.generative_models import GenerativeModel
 from vertexai.language_models import TextEmbeddingModel
 
-# Configure Cloud Logging
 logging_client = google.cloud.logging.Client()
 logging_client.setup_logging()
 logging.basicConfig(level=logging.INFO)
 
-# Project-specific parameters
 PROJECT_ID = "acyproject"
 REGION = "us-central1"
 INDEX_ENDPOINT="projects/8476213728/locations/us-central1/indexEndpoints/6801856006352535552"
 DEPLOYED_INDEX_ID="deployed_index_l400"
 
-# Initialize Vertex AI
 aiplatform.init(project=PROJECT_ID, location=REGION)
 
-# Instantiating the Firebase client
 firebase_app = firebase_admin.initialize_app()
 db = firestore.client()
 
-# Instantiate an embedding model here
 embedding_model = TextEmbeddingModel.from_pretrained("text-embedding-004")
 
-# Instantiate a Generative AI model here
 gen_model = GenerativeModel("gemini-1.5-flash-001", generation_config={"temperature":0})
 
-# Helper function that reads from the config file.
 def get_config_value(config, section, key, default=None):
-    """
-    Retrieve a configuration value from a section with an optional default value.
-    """
     try:
         return config[section][key]
     except:
         return default
 
-# Open the config file (config.yaml)
 with open("config.yaml") as f:
     config = yaml.safe_load(f)
 
-# Read application variables from the config file
 TITLE = get_config_value(config, "app", "title", "Ask Google")
 SUBTITLE = get_config_value(config, "app", "subtitle", "Your friendly Bot")
 CONTEXT = get_config_value(
@@ -60,7 +48,6 @@ BOTNAME = get_config_value(config, "gemini", "botname", "Google")
 
 app = Flask(__name__)
 
-# The Home page route
 @app.route("/", methods=["POST", "GET"])
 def main():
     if request.method == "GET":
@@ -93,20 +80,12 @@ def main():
 def search_vector_database(question):
     data = ""
     
-    print(f"PROJECT_ID: {PROJECT_ID}")
-    print(f"REGION: {REGION}")
-    print(f"INDEX_ENDPOINT: {INDEX_ENDPOINT}")
-    print(f"DEPLOYED_INDEX_ID: {DEPLOYED_INDEX_ID}")
-    
-    # Convert the question into an embedding
     question_embedding = embedding_model.get_embeddings([question])[0].values
 
-    # Create the matching_engine_index_endpoint
     matching_engine_index_endpoint = aiplatform.MatchingEngineIndexEndpoint(
         index_endpoint_name=INDEX_ENDPOINT
     )
 
-    # Perform the nearest neighbor search
     try:
         matched_neighbors = matching_engine_index_endpoint.find_neighbors(
             deployed_index_id=DEPLOYED_INDEX_ID,
@@ -117,17 +96,13 @@ def search_vector_database(question):
         logging.error(f"Error in vector database search: {str(e)}")
         return "Error: Unable to search the database."
 
-    # Process the response
     matched_ids = [neighbor.id for neighbor in matched_neighbors[0]]
 
-    # Get the five documents from Firestore that match the IDs
     pdf_pages_ref = db.collection("pdf_pages")
     docs = [pdf_pages_ref.document(doc_id).get() for doc_id in matched_ids]
 
-    # Concatenate the documents into a single string and return it.
     data = "\n".join([doc.to_dict()['content'] for doc in docs if doc.exists])
 
-    # Don't delete this logging statement.
     logging.info(
         data, extra={"labels": {"service": "cymbal-service", "component": "data"}}
     )
