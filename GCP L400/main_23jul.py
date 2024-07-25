@@ -93,20 +93,12 @@ def main():
 def search_vector_database(question):
     data = ""
     
-    print(f"PROJECT_ID: {PROJECT_ID}")
-    print(f"REGION: {REGION}")
-    print(f"INDEX_ENDPOINT: {INDEX_ENDPOINT}")
-    print(f"DEPLOYED_INDEX_ID: {DEPLOYED_INDEX_ID}")
-    
-    # Convert the question into an embedding
     question_embedding = embedding_model.get_embeddings([question])[0].values
 
-    # Create the matching_engine_index_endpoint
     matching_engine_index_endpoint = aiplatform.MatchingEngineIndexEndpoint(
         index_endpoint_name=INDEX_ENDPOINT
     )
 
-    # Perform the nearest neighbor search
     try:
         matched_neighbors = matching_engine_index_endpoint.find_neighbors(
             deployed_index_id=DEPLOYED_INDEX_ID,
@@ -117,17 +109,13 @@ def search_vector_database(question):
         logging.error(f"Error in vector database search: {str(e)}")
         return "Error: Unable to search the database."
 
-    # Process the response
     matched_ids = [neighbor.id for neighbor in matched_neighbors[0]]
 
-    # Get the five documents from Firestore that match the IDs
     pdf_pages_ref = db.collection("pdf_pages")
     docs = [pdf_pages_ref.document(doc_id).get() for doc_id in matched_ids]
 
-    # Concatenate the documents into a single string and return it.
     data = "\n".join([doc.to_dict()['page'] for doc in docs if doc.exists])
 
-    # Don't delete this logging statement.
     logging.info(
         data, extra={"labels": {"service": "cymbal-web-ui-service", "component": "data"}}
     )
