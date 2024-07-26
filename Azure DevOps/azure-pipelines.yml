@@ -1,0 +1,77 @@
+trigger:
+- main 
+
+pool:
+  vmImage: 'ubuntu-latest' 
+
+variables:
+  pythonVersion: '3.9'
+
+stages:
+- stage: Build
+  displayName: Build stage
+  jobs:
+  - job: BuildJob
+    displayName: Build
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(pythonVersion)'
+      displayName: 'Use Python $(pythonVersion)'
+    
+    - script: |
+        python -m venv antenv
+        source antenv/bin/activate
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+      displayName: 'Install dependencies'
+    
+    - script: |
+        pip install pytest pytest-azurepipelines
+        pytest tests --doctest-modules --junitxml=junit/test-results.xml
+      displayName: 'Run tests'
+
+    - task: PublishTestResults@2
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFiles: '**/test-results.xml'
+        testRunTitle: 'Python $(pythonVersion)'
+      displayName: 'Publish Test Results'
+
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' 
+        replaceExistingArchive: true
+      displayName: 'Archive files'
+
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      artifact: drop
+      displayName: 'Publish Artifact'
+
+- stage: Deploy
+  displayName: Deploy stage
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - deployment: DeployJob
+    displayName: Deploy
+    environment: 'production'
+    pool: 
+      vmImage: 'ubuntu-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: 'Resource Manager Connection'
+              appName: 'yourwebappname'
+              appType: 'webApp'
+              deployToSlotOrASE: true
+              resourceGroupName: 'your-resource-group'
+              slotName: 'production'
+              deploymentMethod: 'auto'
+              package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
