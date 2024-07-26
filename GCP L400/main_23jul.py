@@ -12,45 +12,34 @@ import vertexai
 from vertexai.generative_models import GenerativeModel
 from vertexai.language_models import TextEmbeddingModel
 
-# Configure Cloud Logging
 logging_client = google.cloud.logging.Client()
 logging_client.setup_logging()
 logging.basicConfig(level=logging.INFO)
 
-# Project-specific parameters
 PROJECT_ID = "qwiklabs-gcp-02-d38fbed040bf"
 REGION = "us-central1"
 INDEX_ENDPOINT="projects/275307539691/locations/us-central1/indexEndpoints/3605989120779747328"
 DEPLOYED_INDEX_ID="assessment_index_deployed"
 
-# Initialize Vertex AI
 aiplatform.init(project=PROJECT_ID, location=REGION)
 
-# Instantiating the Firebase client
 firebase_app = firebase_admin.initialize_app()
 db = firestore.client()
 
-# Instantiate an embedding model here
 embedding_model = TextEmbeddingModel.from_pretrained("text-embedding-004")
 
-# Instantiate a Generative AI model here
 gen_model = GenerativeModel("gemini-1.5-flash-001", generation_config={"temperature":0})
 
-# Helper function that reads from the config file.
 def get_config_value(config, section, key, default=None):
-    """
-    Retrieve a configuration value from a section with an optional default value.
-    """
+
     try:
         return config[section][key]
     except:
         return default
 
-# Open the config file (config.yaml)
 with open("config.yaml") as f:
     config = yaml.safe_load(f)
 
-# Read application variables from the config file
 TITLE = get_config_value(config, "app", "title", "Ask Google")
 SUBTITLE = get_config_value(config, "app", "subtitle", "Your friendly Bot")
 CONTEXT = get_config_value(
@@ -60,7 +49,6 @@ BOTNAME = get_config_value(config, "gemini", "botname", "Google")
 
 app = Flask(__name__)
 
-# The Home page route
 @app.route("/", methods=["POST", "GET"])
 def main():
     if request.method == "GET":
