@@ -1,0 +1,209 @@
+MemoryStore
+	AOF persistence logs every write operation received by the server
+	Tier levels
+	Near real-time response
+
+	Memcache
+		Memcache datatypes
+	Redis
+		Redis datatypes
+		RDB backups
+			 RDB persistence performs point-in-time snapshots of your dataset at specified intervals
+		limited-data-loss prevention mode
+		force-data-loss prevention mode
+Dataplex
+	Useful for data linaje
+	Search data based on labeled sources
+	Intelligent data fabric that unifies your distributed data
+	Automates management and power analytics at scale
+	Curated, Integrate, analyze
+	Lake -> Zone -> Assets (GCP Services)
+	Automatic data discovery
+	Data Quality - Auto Checks
+Data Catalog
+	Data Catalog tags
+PubSub Config. Watermarks and timestamps, windows, pull/push subscriptions
+ML types gradiants descent
+ML cost functions
+ML Variance and bias
+ML learning rate. And training time
+ML ways to asses unfairness
+AppEngine concepts and good practices
+Bigtable best practices for latency
+Bigtable concepts
+	Bigtable nodes and clusters
+	Column families
+	BigTable limits
+	Key visualizer
+BigQuery datatypes, bigquery limits (I/o operations, size, number of columns)
+	BigQuery is optimized for high-read data
+	Data stored on colossus
+	Workers distribution. Dremel
+	CREATE ROW ACCESS SECURITY, INFORMATION_SCHEMA, __TABLES__
+	Nested and repeated fields,
+		are used to improve repeated values in denormalized tables
+	ARRAYS AND STRUCTS, JSON
+		Nested Fields are Arrays
+		Array . Mode REPEATED , list as array.dimension(s)
+		Arrat . Should be the same Datatype
+		Structs allow for differing data granularity in the same table
+		Structs are linked to type RECORD, struct.dimension(s)
+		Structs can have nested structs inside
+	Partition Table
+		Table migration table
+		Creates Shards of information, Ingestion_time, integers
+	Clustering
+		By categorical data, at creation time
+		Bigquery automaticlally re-clustering
+DataProc and GCS best practices, 
+Cloud Logging concepts
+Primitive Roles
+Common permissions in GCS, dataflow, bigquery, kubernetes, cloud functions
+	kubectl cmds (replicas, list pods, security)
+Project hierarchy
+L1, L2 regularization, Use cases
+Bucketing, One hot encoding, clustering
+Dataproc preemtible workers, ephimeral nodes
+BigQuery commands, time travel dry-run. BI Engine
+Kubernetes concepts
+Kubernetes best practices
+Kubeflow
+Project policies
+Cloud Spanner concepts, ket hotspotting, secondary indexes
+Datastore
+FireBase, Composite indexes, interleaved row, index, entity, kinds
+Cloud regulations
+Cloud Storage connector. Migrations
+Cloud Monitor
+PubSub metrics, pubsub schemas, schemas types supported. Acknoledgment
+KMS, cloud EKM. Key rotation 
+FireStore, types of indexes
+Data Catalog 
+Data Loss Prevention
+Dataproc common gcloud commands
+Log Router, Resourse Monitor
+Hyperparameter tunnig
+Data Studio, types of data sources. Extracted, blended, live source
+Dataproc concurrent jobs
+Dataproc workflow template
+Dataflow Shuffle, Dataflow FlexRS,Dataflow Streaming Engine
+	Cloud Dataflow flexible resource scheduling (FlexRS) 
+Cloud Spanner Interleved tables
+Cloud CDN
+GCS lifecycle conditions, File type, File Size
+Secret Manager
+Data Loss Prevention, Infotypes
+GCS quarantine bucket
+Storage Transfer services
+Cloud Fusion
+Cloud SQL best practices
+	Cloud SQL is optimized for high-throughput writes 
+Encryption algorithms (AES256, RSA, etc)
+GEN AI API, text-to-speech
+Project and organization policy
+Cloud monitoring metrics
+Managed instance groups
+Load balancers
+Project, Folder, organization
+Dataprep
+Cloud Workflows
+Data Transfer Services
+Cloud SQL , Cloud Spanner Limitations
+bigQuery Omni
+Cloud storage FUSE
+Partition expiration Bigquery
+PubSub policies beside exactly one dilivery subscription
+BigQuery, gcs shared tables
+BigQuery Data Transfer Service
+BigQuery interactive queries
+DataFlow. Side Inputs, Side Outputs
+BigTable Multi-cluster, Sinlge cluster, live traffic app batch-analytics profile
+BigTable Index Pressure
+Cloud Storage , quarantine bucket
+GCE , bastion access
+BQ Authorized view, materialized views
+Iot Gateway, Iot Registry
+Dataplex Roles
+Turbo replication on GCP?
+	Automatic failover
+	Minimal RPO, recovery point objective
+GCP Analytics Hub
+	robust, scalable, and cost effective
+	Minimizes operational control
+	Manages access to sources 
+DLP de-identification jobs
+DLP discovery scan configuration
+DLP deep inspection job
+GCS storage Autoclass
+GCS object versioning and lifecycle
+DataFlow Reshuffle to prevent fusion
+Connected Sheets
+Enterprise Edition reservations
+BigQuery table snapshots
+Data Catalog Concepts
+PubSub options. Acknowledgement, schema enforcement , dead-letter
+Bigtable column families, versioning, expiring values
+PubSub delivery semantics
+BigQuery Storage Write API
+	Exactly once and high throughput
+BigQuery Streaming API
+BigQuery enterprise, pay as-you-go , quaotas and reservations
+Dataproc serverless?
+PubSub, exponential backoff, dead letter, delivery retries
+AlloyDB
+Analytics Hub
+DataStream CLoud SQL replication to BigQuery
+VPC networks, shared vpc and subnetwoks. VPC service controls
+Firewall policies
+Cloud identity, Identity platform
+Data Catalog Taxonomy of policy tags. BigLake Tables
+KMS , CMEK concepts
+POSIX compliance
+ACID compliance database
+	BigTable not fully acid complaint
+	Cloud sql ACID compliant
+	Cloud SQL will manage automatically failover when High Available configured
+Transfer appliances, Transfer service. Transfer services 
+Longtail and outlier data points
+Cloud NAT
+VPC Network Peering
+Policy tags
+Cloud SQL, High availability, read replicas, cascading read replicas
+Cloud Interconnect
+BigQuery Omni
+Dataform concepts, dataform assertions
+PubSub Snapshots, flags clear-retry-policy retain-acked-messages
+PubSub Seek operation
+BogQuery definitions. non_incremental_definition max_stateless
+Cloud Composer 2
+Examples of organization policies
+RTO, RPO requirements
+AlloyDB
+AEAD bigquery functions
+bigquery sql pipelines as batch query, ad-hoc queries as interactive. Job priority Batch or interactive
+Cloud SQL, failover replica, read repica. Types of replicas
+BigTable. Wide table, narrow table
+Cloud Spanner , stale reads, locking read write transactions
+Data loss Prevention concepts
+BigQuery ML Clauses, TRANSFORM, EVALUATE
+BigTable field promotion
+BigTable Node Scaling modes
+BigTable cbt commands
+GCP cloud interconnect
+BigTable Column families, key design best practices
+TensorFlow common methods
+Dataflow common transformations
+Quarentine data GCS, best security practices GCS
+DataPrep Common Transformations
+Wide and Deep model
+Interactive BQ Queries
+BigQuery caching
+Dataflow types of triggers
+Main Data Enginner services . IAM permissions
+Looker concepts
+BigTable cluster routing
+BigQuery Link permanent tables, temporary tables. Best practices
+BigQuery Batch, Streaming API. Best practices
+BigQuery. TABLE_DATE_RANGE
+Cloud Nat
+BigQuery Interactive Batching, Cache batching
